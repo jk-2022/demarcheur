@@ -1,8 +1,18 @@
 # store/serializers.py
 
 from rest_framework import serializers
-from product.models import Category, Product, ProductImages, Review
+from product.models import Category, Product, ProductImages, Review, Ville, Type
 from django.contrib.auth.models import User
+
+class VilleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Ville
+        fields="__all__"
+        
+class TypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Type
+        fields="__all__"
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -43,7 +53,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'name', 'description', 'price', 'category', 'owner', 'images', 'image_files','reviews']
+        fields = '__all__'
         
     def create(self, validated_data):
         print(validated_data)

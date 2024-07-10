@@ -4,11 +4,10 @@ from django.contrib.auth.models import User, Group
 from rest_framework import generics, permissions, status
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
-from product.models import Category, Product, Review
+from product.models import Category, Product, Review, Type, Ville
 from rest_framework.response import Response
-from .serializers import CategorySerializer, ProductSerializer, ReviewSerializer
+from .serializers import *
 from .permissions import IsOwnerOrReadOnly, IsProductManager
-from .serializers import RegisterSerializer
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated, IsAdminUser])
@@ -36,6 +35,33 @@ class CategoryList(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+class CategoryCreateAPIView(generics.CreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class CategoryDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    
+class TypeListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Type.objects.all()
+    serializer_class = TypeSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class TypeDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Type.objects.all()
+    serializer_class = TypeSerializer
+
+class VilleListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Ville.objects.all()
+    serializer_class = VilleSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+class VilleDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Ville.objects.all()
+    serializer_class = VilleSerializer
 
 class ProductList(generics.ListCreateAPIView):
     queryset = Product.objects.all()
