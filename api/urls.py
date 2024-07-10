@@ -1,7 +1,7 @@
 # store/urls.py
 
 from django.urls import path
-from .views import CategoryList, ProductList, ProductDetail, ReviewListCreate, RegisterView, ProductCreateView
+from .views import CategoryList, ProductList, ProductDetail, ReviewListCreate, RegisterView, ProductCreateView, add_user_to_group
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -16,4 +16,5 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('register/', RegisterView.as_view(), name='register'),
+    path('add_user_to_group/', add_user_to_group, name='add_user_to_group'),
 ]

@@ -1,14 +1,31 @@
 # store/views.py
 
-from rest_framework import generics, permissions
-from rest_framework.permissions import AllowAny
+from django.contrib.auth.models import User, Group
+from rest_framework import generics, permissions, status
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.decorators import api_view, permission_classes
 from product.models import Category, Product, Review
+from rest_framework.response import Response
 from .serializers import CategorySerializer, ProductSerializer, ReviewSerializer
-from rest_framework.permissions import IsAuthenticated
-from .permissions import IsOwnerOrReadOnly
-from django.contrib.auth.models import User
+from .permissions import IsOwnerOrReadOnly, IsProductManager
 from .serializers import RegisterSerializer
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def add_user_to_group(request):
+    username = request.data.get('username')
+    if not username:
+        return Response({"error": "Username is required"}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+    group, created = Group.objects.get_or_create(name='product_manager')
+    user.groups.add(group)
+
+    return Response({"message": "User added to product_manager group"}, status=status.HTTP_200_OK)
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
