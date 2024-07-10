@@ -1,7 +1,7 @@
 # store/urls.py
 
 from django.urls import path
-from .views import CategoryList, ProductList, ProductDetail, ReviewListCreate, RegisterView
+from .views import CategoryList, ProductList, ProductDetail, ReviewListCreate, RegisterView, ProductCreateView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -10,6 +10,7 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     path('categories/', CategoryList.as_view(), name='category-list'),
     path('products/', ProductList.as_view(), name='product-list'),
+    path('products/create/', ProductCreateView.as_view(), name='product-create'),
     path('products/<int:pk>/', ProductDetail.as_view(), name='product-detail'),
     path('reviews/', ReviewListCreate.as_view(), name='review-list-create'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
