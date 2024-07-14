@@ -46,9 +46,9 @@ class ProductImages(models.Model):
 
 class Review(models.Model):
     product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
-    user = models.ForeignKey(User, related_name='reviews', on_delete=models.CASCADE)
+    user = models.CharField(max_length=100, default='admin')
     review = models.TextField()
     rating = models.IntegerField()
 
     def __str__(self):
-        return f"Review for {self.product.name} by {self.user.username}"
+        return f"Review for {self.product.name} by {self.user}"

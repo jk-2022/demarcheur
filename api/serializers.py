@@ -4,15 +4,21 @@ from rest_framework import serializers
 from product.models import Category, Product, ProductImages, Review, Ville, Type
 from django.contrib.auth.models import User
 
+
+class UserSerialiser(serializers.ModelSerializer):
+    class Meta:
+        model=User 
+        fields=["id","username"]
+
 class VilleSerializer(serializers.ModelSerializer):
     class Meta:
         model=Ville
-        fields="__all__"
+        fields=['id', 'name']
         
 class TypeSerializer(serializers.ModelSerializer):
     class Meta:
         model=Type
-        fields="__all__"
+        fields=['id', 'name']
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -42,21 +48,22 @@ class ProductImageSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        fields = ['id', 'user', 'review', 'rating']
+        fields = ['id', 'product', 'user', 'review', 'rating']
 
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
     image_files = serializers.ListField(
         child=serializers.ImageField(write_only=True), write_only=True, required=False)
     reviews = ReviewSerializer(many=True, read_only=True)
-    owner = serializers.ReadOnlyField(source='owner.username')
-
+    user = serializers.ReadOnlyField(source='user.username')
+    # category=CategorySerializer(read_only=True)
+    # type=TypeSerializer(read_only=True)
+    # ville=VilleSerializer(read_only=True)
     class Meta:
         model = Product
         fields = '__all__'
         
     def create(self, validated_data):
-        print(validated_data)
         image_files = validated_data.pop("image_files",[])
         product = Product.objects.create(**validated_data)
         for image in image_files:
@@ -66,9 +73,14 @@ class ProductSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         image_files = validated_data.pop('image_files', [])
         instance.name = validated_data.get('name', instance.name)
-        instance.description = validated_data.get('description', instance.description)
-        instance.price = validated_data.get('price', instance.price)
         instance.category = validated_data.get('category', instance.category)
+        instance.ville = validated_data.get('ville', instance.ville)
+        instance.description = validated_data.get('description', instance.description)
+        instance.quartier = validated_data.get('quartier', instance.quartier)
+        instance.prix = validated_data.get('prix', instance.prix)
+        instance.avance = validated_data.get('avance', instance.avance)
+        instance.visite = validated_data.get('visite', instance.visite)
+        instance.caracteristique = validated_data.get('caracteristique', instance.caracteristique)
         instance.save()
 
         # Remove existing images if new ones are provided
